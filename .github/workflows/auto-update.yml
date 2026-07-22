@@ -7,7 +7,7 @@ schedule:
 - cron: '0 0 * * *'
 workflow_dispatch:
 
-Ensure the action has permission to save files back to your repository
+Add this permissions block to allow the bot to commit files
 
 permissions:
 contents: write
