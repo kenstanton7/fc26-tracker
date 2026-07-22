@@ -1,0 +1,40 @@
+name: Daily FC26 Card Update
+
+Run this every day at midnight, OR manually via a button click
+
+on:
+schedule:
+- cron: '0 0 * * *'
+workflow_dispatch:
+
+Add this permissions block to allow the bot to commit files
+
+permissions:
+contents: write
+
+jobs:
+update-cards:
+runs-on: ubuntu-latest
+
+steps:
+  - name: Grab the latest repository code
+    uses: actions/checkout@v4
+
+  - name: Set up Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: '3.10'
+
+  - name: Run the Python fetch script
+    run: python fetch_new_cards.py
+
+  - name: Save (Commit) the new players.js back to GitHub
+    run: |
+      git config --global user.name "GitHub Action Bot"
+      git config --global user.email "action@github.com"
+      git add players.js
+      
+      # This command commits the file ONLY if there are changes.
+      # If no new cards were found, it safely skips saving.
+      git commit -m "Automated daily card update" || echo "No changes to commit"
+      git push
